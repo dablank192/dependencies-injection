@@ -6,12 +6,23 @@ public class ServiceCollection
 {
     public readonly List<ServiceDescriptor> _serviceCollection = [];
 
-    public void AddTransient<IService, IImplementation> ()
+    private void AddDescriptor<TService, TImplementation> (ServiceLifetime lifetime)
     {
-        var serviceType = typeof(IService);
+        _serviceCollection.Add(new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime));
+    }
 
-        var implementationType = typeof(IImplementation);
+    public void AddTransient<TService, TImplementation> ()
+    {
+        AddDescriptor<TService, TImplementation>(ServiceLifetime.Transient);
+    }
 
-        _serviceCollection.Add(new ServiceDescriptor (serviceType, implementationType, ServiceLifetime.Transient));
+    public void AddScoped<TService, TImplementation> ()
+    {
+        AddDescriptor<TService, TImplementation>(ServiceLifetime.Scoped);
+    }
+
+    public void AddSingleton<TService, TImplementation> ()
+    {
+        AddDescriptor<TService, TImplementation>(ServiceLifetime.Singleton);
     }
 }
